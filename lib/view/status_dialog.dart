@@ -1,23 +1,28 @@
+import 'package:DevJurnal_new_world/constant/key_collection.dart';
+import 'package:DevJurnal_new_world/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
-
-void showDialogClass([Map<String, dynamic> status]) {
+void showDialogClass(Map<bool, dynamic> resultValue,
+    {String navigation = "", bool status = false}) {
   showDialog(
-    context: scaffoldKey.currentContext,
+    context: registKey.currentContext == null
+        ? loginKey.currentContext
+        : registKey.currentContext,
     barrierDismissible: false,
     barrierColor: Colors.black.withOpacity(0.5),
-    builder: (context) => StatusDialog(status),
+    builder: (context) => StatusDialog(resultValue, navigation, status),
   );
 }
 
 class StatusDialog extends StatelessWidget {
-  final Map<String, dynamic> status;
-  StatusDialog([this.status]);
+  final Map<bool, dynamic> resultValue;
+  final String navigation;
+  final bool status;
+  StatusDialog(this.resultValue, this.navigation, this.status);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: status == null
+      content: resultValue == null
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -25,12 +30,16 @@ class StatusDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Status : ${status.keys.first}'),
-                Text('Message : ${status.values.first}'),
+                Text(
+                    'Status : ${resultValue.keys.first == true ? 'Success' : 'Fail'}'),
+                Text('Message : ${resultValue.values.first}'),
                 Center(
                   child: FlatButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        navigation.isEmpty || !(resultValue.keys.first)
+                            ? Navigator.pop(context)
+                            : navigateToPage(navigation,
+                                status: status, otp: resultValue.values.last);
                       },
                       child: Text("OK")),
                 )

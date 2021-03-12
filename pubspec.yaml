@@ -27,11 +27,12 @@ dependencies:
   cupertino_icons: ^1.0.0
   date_time_picker: ^1.1.1
   flutter_hooks: ^0.15.0
-  flutter_riverpod: ^0.12.4
+  flutter_riverpod: 
   flutter_typeahead: ^2.0.0
   freezed_annotation: ^0.12.0
   google_fonts: ^1.1.2
   gradient_widgets: ^0.5.2
+  http: any
   intl: ^0.16.1
   keyboard_visibility: ^0.5.6
   motion_widget: ^1.0.2
@@ -45,7 +46,6 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
 
@@ -58,13 +58,10 @@ flutter:
   assets:
     - assets/
   #   - images/a_dot_ham.jpeg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

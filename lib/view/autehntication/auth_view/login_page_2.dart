@@ -15,7 +15,6 @@ class _LoginPage2State extends State<LoginPage2>
 
   AnimationController _controller;
   Animation _animation;
-  ScrollPhysics physics = NeverScrollableScrollPhysics();
   final scrollController = ScrollController();
   int currentIndex = 0;
   bool isIgnore = false;

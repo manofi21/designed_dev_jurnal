@@ -1,8 +1,9 @@
+import 'package:DevJurnal_new_world/constant/key_collection.dart';
 import 'package:DevJurnal_new_world/model/task/task_model.dart';
 import 'package:DevJurnal_new_world/view/journal_widget/flutter_swiper.dart';
-import 'package:DevJurnal_new_world/view_model/API_repository.dart';
+import 'package:DevJurnal_new_world/view_model/repository/API_repository.dart';
 import 'package:DevJurnal_new_world/view_model/home_change_notifier.dart';
-import 'package:DevJurnal_new_world/view_model/task_API_riverpod.dart';
+import 'package:DevJurnal_new_world/view_model/riverpod_notifier/task_API_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,6 @@ import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 // final swipeController = SwiperController();
 CalendarController calendarController = CalendarController();
 Map<DateTime, List<Task>> localDateMap = Map();
@@ -67,7 +67,6 @@ class _HomePageRiverpodState extends State<HomePageRiverpod> {
         final homeChangeNotifier = watch(_homeChangeNotifier);
         final todosState = watch(todosNotifierProvider.state);
         return Scaffold(
-          key: scaffoldKey,
           body: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -249,6 +248,22 @@ class BuidlTableCalendar extends StatelessWidget {
             homeChangeNotifier.currentDate)) {
           homeChangeNotifier.startAutoSwipe();
         }
+
+        var sortedKeys = [
+          localDateMap.keys.last,
+          ...localDateMap.keys
+              .toList(growable: false)
+              .sublist(0, localDateMap.length - 1)
+        ];
+        Map<DateTime, List<Task>> task = Map();
+        sortedKeys.forEach((e) {
+          task[e] = localDateMap[e];
+        });
+        print(sortedKeys);
+        homeChangeNotifier.eventsProvider = localDateMap;
+
+        // localDateMap.clear();
+        // localDateMap = task;
       },
     );
   }
@@ -257,11 +272,15 @@ class BuidlTableCalendar extends StatelessWidget {
 class BuidlEventList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final list = context.read(_homeChangeNotifier).selectedDay;
+    final homeNotifier = context.read(_homeChangeNotifier);
+    print(homeNotifier.eventsProvider == null);
+    final list = homeNotifier.selectedDay;
     Widget _buildItem(BuildContext context, int index) {
       final listTask = list[index];
       String toString = DateFormat("dd MMMM yyyy").format(listTask);
-      final dateData = localDateMap[listTask];
+      final dateData = homeNotifier.eventsProvider == null
+          ? localDateMap[listTask]
+          : homeNotifier.eventsProvider[listTask];
       return Container(
         padding: EdgeInsets.only(bottom: 10), //30
         child: Container(

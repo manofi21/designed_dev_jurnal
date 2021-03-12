@@ -1,7 +1,7 @@
-import 'package:DevJurnal_new_world/view/home_page.dart';
+import 'package:DevJurnal_new_world/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 
-void showDialogClass(BuildContext context) {
+void crudDialogClass(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -165,9 +165,7 @@ class AddDialog extends StatelessWidget {
                     color: Colors.orange),
                 // color: Colors.orange,
                 child: FlatButton(
-                    onPressed: () {
-                      // Navigator.pop(context);
-                    },
+                    onPressed: () {},
                     child: Text(
                       "Submit",
                       style: TextStyle(

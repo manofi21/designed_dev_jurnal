@@ -1,7 +1,8 @@
+import 'package:DevJurnal_new_world/constant/key_collection.dart';
 import 'package:DevJurnal_new_world/model/task/task_model.dart';
 import 'package:DevJurnal_new_world/view/home_page.dart';
 import 'package:DevJurnal_new_world/view/status_dialog.dart';
-import 'package:DevJurnal_new_world/view_model/API_repository.dart';
+import 'package:DevJurnal_new_world/view_model/repository/API_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,11 +22,11 @@ final todoExceptionProvider = StateProvider<TodoException>((ref) {
   return null;
 });
 
-void awaitStatus(Map<String, dynamic> map) async {
-  return Future.delayed(Duration(milliseconds: 500), () {
-    showDialogClass(map);
-  });
-}
+// void awaitStatus(Map<bool, dynamic> map, {String navigation}) async {
+//   return Future.delayed(Duration(milliseconds: 500), () {
+//     showDialogClass(map, navigation: navigation);
+//   });
+// }
 
 Widget timesWidget(Task _task) {
   // print(_task);
@@ -108,52 +109,52 @@ class TodoNotifier extends StateNotifier<AsyncValue<List<Task>>> {
     }
   }
 
-  Future<void> add(Task task) async {
-    _cacheState();
-    state = state.whenData((todos) => [...todos]..add(task));
+//   Future<void> add(Task task) async {
+//     _cacheState();
+//     state = state.whenData((todos) => [...todos]..add(task));
 
-    // try {
-    //   showDialogClass();
-    //   await read(todoRepositoryProvider).addTodo(task);
-    //   Navigator.pop(scaffoldKey.currentContext);
-    //   awaitStatus({"Success": "Data Has Been Added"});
-    // } on TodoException catch (e) {
-    //   Navigator.pop(scaffoldKey.currentContext);
-    //   awaitStatus({"Error": e.toString()});
-    //   _handleException(e);
-    // }
-  }
+//     try {
+//       // showDialogClass();
+//       await read(todoRepositoryProvider).addTodo(task);
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Success": "Data Has Been Added"});
+//     } on TodoException catch (e) {
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Error": e.toString()});
+//       _handleException(e);
+//     }
+//   }
 
-  Future<void> edit(int id, Task newTask) async {
-    _cacheState();
-// error
-    try {
-      showDialogClass();
-      await read(todoRepositoryProvider).edit(id, newTask);
-      Navigator.pop(scaffoldKey.currentContext);
-      awaitStatus({"Success": "Data Has Been Edited"});
-    } on TodoException catch (e) {
-      Navigator.pop(scaffoldKey.currentContext);
-      awaitStatus({"Error": e.toString()});
-      _handleException(e);
-    }
-  }
+//   Future<void> edit(int id, Task newTask) async {
+//     _cacheState();
+// // error
+//     try {
+//       // showDialogClass();
+//       await read(todoRepositoryProvider).edit(id, newTask);
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Success": "Data Has Been Edited"});
+//     } on TodoException catch (e) {
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Error": e.toString()});
+//       _handleException(e);
+//     }
+//   }
 
-  Future<void> remove(int id, Task task) async {
-    //error
-    _cacheState();
-    state = state.whenData(
-      (value) => value.where((element) => element != task).toList(),
-    );
-    try {
-      showDialogClass();
-      await read(todoRepositoryProvider).remove(id, task);
-      Navigator.pop(scaffoldKey.currentContext);
-      awaitStatus({"Success": "Data Has Been Deleted"});
-    } on TodoException catch (e) {
-      Navigator.pop(scaffoldKey.currentContext);
-      awaitStatus({"Error": e.toString()});
-      _handleException(e);
-    }
-  }
+//   Future<void> remove(int id, Task task) async {
+//     //error
+//     _cacheState();
+//     state = state.whenData(
+//       (value) => value.where((element) => element != task).toList(),
+//     );
+//     try {
+//       // showDialogClass();
+//       await read(todoRepositoryProvider).remove(id, task);
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Success": "Data Has Been Deleted"});
+//     } on TodoException catch (e) {
+//       Navigator.pop(scaffoldKey.currentContext);
+//       // awaitStatus({"Error": e.toString()});
+//       _handleException(e);
+//     }
+//   }
 }

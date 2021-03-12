@@ -1,6 +1,9 @@
+import 'package:DevJurnal_new_world/constant/key_collection.dart';
+import 'package:DevJurnal_new_world/constant/named_navigation_collection.dart';
+import 'package:DevJurnal_new_world/navigation/navigation.dart';
 import 'package:DevJurnal_new_world/view/autehntication/parent_background.dart';
+import 'package:DevJurnal_new_world/view_model/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class SingUp extends StatefulWidget {
@@ -12,55 +15,66 @@ class _SingUpState extends State<SingUp> with SingleTickerProviderStateMixin {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  AuthAccess access = AuthAccess();
+  int _currentIndex = 0;
 
   AnimationController _controller;
-  Animation _animation;
-  final scrollController = ScrollController();
+  Animation<double> _animation;
+  ScrollController scrollController;
 
-  FocusNode _focusNodeName = FocusNode();
-  FocusNode _focusNodeEmail = FocusNode();
-  FocusNode _focusNodePass = FocusNode();
+  static FocusNode _focusNodeName = FocusNode();
+  static FocusNode _focusNodeEmail = FocusNode();
+  static FocusNode _focusNodePass = FocusNode();
+
+  List<FocusNode> listFocus = [_focusNodeName, _focusNodeEmail, _focusNodePass];
 
   void isFocusTrue(FocusNode node) {
     if (node.hasFocus) {
       _controller.forward().whenComplete(() => scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
+            scrollController.position.maxScrollExtent - 250,
             curve: Curves.easeOut,
             duration: const Duration(milliseconds: 300),
           ));
     } else {
       _controller.reverse();
+      // _controller.stop();
     }
   }
 
   @override
   void initState() {
     super.initState();
+    scrollController = ScrollController();
+    nameController.text = "hoiiiiii";
+    emailController.text = "jqb04623@cuoly.com";
+    passwordController.text = "hoiiiiii23231232132";
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation = Tween<double>(begin: 0.0, end: 200.0).animate(_controller)
       ..addListener(() {
-        setState(() {});
+        // setState(() {});
       });
 
-    _focusNodeName.addListener(() {
-      isFocusTrue(_focusNodeName);
+    listFocus[0].addListener(() {
+      isFocusTrue(listFocus[0]);
     });
 
-    _focusNodeEmail.addListener(() {
-      isFocusTrue(_focusNodeEmail);
+    listFocus[1].addListener(() {
+      // print(1);
+      isFocusTrue(listFocus[1]);
     });
 
-    _focusNodePass.addListener(() {
-      isFocusTrue(_focusNodePass);
+    listFocus[2].addListener(() {
+      // print(2);
+      isFocusTrue(listFocus[2]);
     });
 
     KeyboardVisibilityNotification().addNewListener(
       onHide: () {
-        _focusNodeName.unfocus();
-        _focusNodeEmail.unfocus();
-        _focusNodePass.unfocus();
+        listFocus.forEach((e) {
+          e.unfocus();
+        });
       },
     );
   }
@@ -75,11 +89,11 @@ class _SingUpState extends State<SingUp> with SingleTickerProviderStateMixin {
             child: Center(
               child: TextFormField(
                 controller: controller,
-                focusNode: controller == emailController
-                    ? _focusNodeEmail
-                    : controller == passwordController
-                        ? _focusNodePass
-                        : _focusNodeName,
+                focusNode: controller == nameController
+                    ? listFocus[0]
+                    : controller == emailController
+                        ? listFocus[1]
+                        : listFocus[2],
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(left: 10, bottom: 10),
                     border: InputBorder.none,
@@ -95,158 +109,71 @@ class _SingUpState extends State<SingUp> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ParentBackgroundPage(
-      controller: scrollController,
-      height: _animation.value,
-      title: "Create an \nAccount",
-      swipeTitle: "Swipe up to sign in",
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            formField(nameController),
-            formField(emailController),
-            formField(passwordController),
-            SizedBox(height: 10),
-            nextButton(context),
-            // Spacer(),
-            SizedBox(
-              height: 34,
+    return Scaffold(
+      key: registKey,
+      body: ParentBackgroundPage(
+        controller: scrollController,
+        height: _animation.value,
+        title: "Create an \nAccount",
+        swipeTitle: "Swipe up to sign in",
+        swipeNavigatorFunction: () {
+          navigateToPage(SignInNavigation);
+        },
+        child: Focus(
+          onFocusChange: (bool check) {
+            if (check) {
+              print(check);
+              // listFocus.forEach((e) => e.unfocus());
+              // listFocus[_currentIndex].requestFocus();
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10),
+                formField(nameController),
+                formField(emailController),
+                formField(passwordController),
+                SizedBox(height: 10),
+                nextButton(context),
+                SizedBox(height: 34),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  Widget nextButton(BuildContext context) {
+    return Center(
+      child: Container(
+          height: 40,
+          width: (MediaQuery.of(context).size.width / 2) + 50,
+          decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 4,
+                    offset: Offset(0, 5),
+                    // spreadRadius: 2,
+                    color: Color.fromRGBO(0, 0, 0, 0.3))
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              color: Color.fromRGBO(120, 33, 232, 1)),
+          child: FlatButton(
+            onPressed: () {
+              access.signUp(nameController.text, emailController.text,
+                  passwordController.text);
+              // navigateToPage(OtpPageNavigation);
+            },
+            child: Text("Next",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          )),
+    );
+  }
 }
-
-Widget nextButton(BuildContext context) {
-  return Center(
-    child: Container(
-        height: 40,
-        width: (MediaQuery.of(context).size.width / 2) + 50,
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 4,
-                  offset: Offset(0, 5),
-                  // spreadRadius: 2,
-                  color: Color.fromRGBO(0, 0, 0, 0.3))
-            ],
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            color: Color.fromRGBO(120, 33, 232, 1)),
-        child: FlatButton(
-          onPressed: () {},
-          child: Text("Next",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
-        )),
-  );
-}
-
-//  {
-//   final nameController = TextEditingController();
-//   final emailController = TextEditingController();
-//   final passController = TextEditingController();
-//   final positionController = TextEditingController();
-//   final otpController = TextEditingController();
-//   final pageController = PageController();
-
-//   ScrollPhysics physics = NeverScrollableScrollPhysics();
-//   List<Widget> _lWidget = List();
-//   int currentIndex = 0;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _lWidget.add(Column(
-//       children: [
-//         Column(
-//           children: [
-//             formField(nameController),
-//             formField(emailController),
-//             formField(passController),
-//           ],
-//         ),
-//         formField(positionController)
-//       ],
-//     ));
-//   }
-
-//   Widget formField(TextEditingController controller) => Container(
-//       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-//       // padding: EdgeInsets.all(5),
-//       decoration: BoxDecoration(
-//           color: Color.fromRGBO(244, 243, 243, 1),
-//           borderRadius: BorderRadius.circular(15)),
-//       child: Center(
-//         child: TextFormField(
-//           controller: controller,
-//           decoration: InputDecoration(
-//               border: InputBorder.none,
-//               prefixIcon: Icon(
-//                 controller == nameController
-//                     ? Icons.people_alt_rounded
-//                     : controller == positionController
-//                         ? Icons.lock_outlined
-//                         : Icons.phone_callback_outlined,
-//                 color: Colors.black87,
-//               ),
-//               hintText: controller == nameController
-//                   ? "Name"
-//                   : controller == emailController
-//                       ? "Email Address"
-//                       : "Password",
-//               hintStyle: TextStyle(color: Colors.grey, fontSize: 15)),
-//         ),
-//       ));
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(),
-//       body: Column(
-//         children: [
-//           Text("Wellcome to Dev Journal"),
-//           SizedBox(height: 40),
-//           Text("Sign Up"),
-//           SizedBox(height: 80),
-//           Column(
-//             children: [
-//               formField(nameController),
-//               formField(emailController),
-//               formField(passController),
-//             ],
-//           ),
-//           RaisedButton(onPressed: () {
-//             print(_lWidget.length);
-//             setState(() {
-//               if (_lWidget.length == 1 && currentIndex == 0) {
-//                 _lWidget.add(Container(
-//                     margin: EdgeInsets.symmetric(vertical: 60),
-//                     child: formField(otpController)));
-//                 currentIndex = 1;
-//                 pageController.nextPage(
-//                     duration: Duration(seconds: 1), curve: Curves.ease);
-//               }
-//             });
-//           })
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// /*
-//           SizedBox(
-//             height: 200,
-//             child: PageView.builder(
-//                 controller: pageController,
-//                 itemCount: _lWidget.length,
-//                 itemBuilder: (context, index) => _lWidget[index]),
-//           ),
-// */
